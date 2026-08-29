@@ -27,14 +27,14 @@ from pydantic import BaseModel, Field, EmailStr, ConfigDict
 # --------------------------------------------------------------------
 import certifi
 
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url, tlsCAFile=certifi.where())
-db = client[os.environ['DB_NAME']]
+mongo_url = os.environ.get('MONGO_URL', '').strip().strip('"').strip("'")
+client = AsyncIOMotorClient(mongo_url, tlsCAFile=certifi.where(), serverSelectionTimeoutMS=5000)
+db = client[os.environ.get('DB_NAME', 'test_database')]
 
 app = FastAPI(title="TaskFlow API")
 api_router = APIRouter(prefix="/api")
 
-JWT_SECRET = os.environ['JWT_SECRET']
+JWT_SECRET = os.environ.get('JWT_SECRET', 'change-me-before-use')
 JWT_ALGORITHM = "HS256"
 ACCESS_TOKEN_HOURS = 24 * 7  # 7-day access token for simplicity
 
@@ -564,25 +564,28 @@ async def root():
 # --------------------------------------------------------------------
 @app.on_event("startup")
 async def on_startup():
-    await db.users.create_index("email", unique=True)
-    await db.workspaces.create_index("member_ids")
-    await db.tasks.create_index("workspace_id")
-    await db.comments.create_index("task_id")
-    await db.notifications.create_index("user_id")
-    # Seed admin user
-    admin_email = os.environ.get("ADMIN_EMAIL", "admin@taskflow.io")
-    admin_password = os.environ.get("ADMIN_PASSWORD", "admin123")
-    existing = await db.users.find_one({"email": admin_email})
-    if not existing:
-        await db.users.insert_one({
-            "id": new_id(),
-            "email": admin_email,
-            "name": "Admin",
-            "password_hash": hash_password(admin_password),
-            "avatar_color": "#FF4500",
-            "created_at": now_iso(),
-        })
-    logger.info("TaskFlow startup complete")
+    try:
+        await db.users.create_index("email", unique=True)
+        await db.workspaces.create_index("member_ids")
+        await db.tasks.create_index("workspace_id")
+        await db.comments.create_index("task_id")
+        await db.notifications.create_index("user_id")
+        # Seed admin user
+        admin_email = os.environ.get("ADMIN_EMAIL", "admin@taskflow.io")
+        admin_password = os.environ.get("ADMIN_PASSWORD", "admin123")
+        existing = await db.users.find_one({"email": admin_email})
+        if not existing:
+            await db.users.insert_one({
+                "id": new_id(),
+                "email": admin_email,
+                "name": "Admin",
+                "password_hash": hash_password(admin_password),
+                "avatar_color": "#FF4500",
+                "created_at": now_iso(),
+            })
+        logger.info("TaskFlow startup complete")
+    except Exception as e:
+        logger.error(f"Startup error (non-fatal): {e}")
 
 
 @app.on_event("shutdown")
