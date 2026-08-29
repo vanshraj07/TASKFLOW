@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@500;700;800;900&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --tf-orange: #FF4500;
+  --tf-orange-hover: #CC3700;
+  --tf-black: #0A0A0A;
+  --tf-bg: #FDFDFD;
+  --tf-surface: #FFFFFF;
+  --tf-muted: #F3F4F6;
+  --tf-sidebar: #FAFAFA;
+  --tf-text: #0A0A0A;
+  --tf-text-secondary: #525252;
+  --tf-border-subtle: #E5E7EB;
+  --tf-todo: #E5E7EB;
+  --tf-in-progress: #007AFF;
+  --tf-done: #00C853;
+  --tf-urgent: #FF3B30;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 99%;
+    --foreground: 0 0% 4%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 4%;
+    --primary: 16 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 32%;
+    --accent: 0 0% 96%;
+    --accent-foreground: 0 0% 9%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 4%;
+    --input: 0 0% 4%;
+    --ring: 16 100% 50%;
+    --radius: 0.125rem;
+  }
+}
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--tf-bg);
+  color: var(--tf-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+.font-display { font-family: 'Barlow', sans-serif; letter-spacing: -0.03em; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+.brutal-shadow { box-shadow: 4px 4px 0px 0px rgba(10,10,10,1); }
+.brutal-shadow-lg { box-shadow: 8px 8px 0px 0px rgba(10,10,10,1); }
+.brutal-shadow-sm { box-shadow: 2px 2px 0px 0px rgba(10,10,10,1); }
+.brutal-card {
+  background: #FFFFFF;
+  border: 1px solid #0A0A0A;
+  box-shadow: 4px 4px 0px 0px rgba(10,10,10,1);
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+.brutal-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0px 0px rgba(10,10,10,1);
+}
+.tab-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #0A0A0A; border-radius: 0; }
+@layer base { * { border-color: hsl(var(--border) / 0.15); } }
+.rdp { --rdp-cell-size: 36px; }
+::selection { background: #FF4500; color: white; }
+.stagger-in > * { opacity: 0; transform: translateY(6px); animation: staggerFade 400ms ease forwards; }
+.stagger-in > *:nth-child(1){ animation-delay: 40ms; }
+.stagger-in > *:nth-child(2){ animation-delay: 90ms; }
+.stagger-in > *:nth-child(3){ animation-delay: 140ms; }
+.stagger-in > *:nth-child(4){ animation-delay: 190ms; }
+.stagger-in > *:nth-child(5){ animation-delay: 240ms; }
+.stagger-in > *:nth-child(6){ animation-delay: 290ms; }
+.stagger-in > *:nth-child(7){ animation-delay: 340ms; }
+.stagger-in > *:nth-child(8){ animation-delay: 390ms; }
+@keyframes staggerFade { to { opacity: 1; transform: translateY(0); } }
