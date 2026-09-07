@@ -170,7 +170,7 @@ export default function AppShell() {
               <PopoverTrigger asChild>
                 <button
                   data-testid={SHELL.notificationsBtn}
-                  className="relative w-10 h-10 flex items-center justify-center border border-neutral-900 hover:bg-[#FF4500] hover:text-white"
+                  className="relative w-10 h-10 flex items-center justify-center hover:text-[#FF4500] transition-colors"
                 >
                   <Bell size={18} />
                   {unread > 0 && (
