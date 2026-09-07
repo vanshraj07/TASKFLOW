@@ -7,6 +7,7 @@ import { BOARD, WORKSPACE } from '@/constants/testIds';
 import { Plus, Users, UserPlus } from 'lucide-react';
 import { DndContext, PointerSensor, useSensor, useSensors, useDraggable, useDroppable, DragOverlay, closestCorners } from '@dnd-kit/core';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { toast } from 'sonner';
 import TaskModal from '@/components/TaskModal';
 
@@ -214,23 +215,51 @@ export default function BoardPage() {
           {workspace.description && <p className="text-neutral-600 mt-2 max-w-2xl text-sm">{workspace.description}</p>}
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex -space-x-2">
-            {members.slice(0, 5).map((m) => (
-              <span
-                key={m.id}
-                title={m.name}
-                className="w-9 h-9 flex items-center justify-center text-white font-bold text-sm border-2 border-white ring-1 ring-neutral-900"
-                style={{ background: m.avatar_color || '#FF4500' }}
-              >
-                {m.name?.[0]?.toUpperCase()}
-              </span>
-            ))}
-            {members.length > 5 && (
-              <span className="w-9 h-9 flex items-center justify-center text-xs font-bold bg-neutral-200 border-2 border-white ring-1 ring-neutral-900">
-                +{members.length - 5}
-              </span>
-            )}
-          </div>
+          <Popover>
+              <PopoverTrigger asChild>
+                <button className="flex -space-x-2 cursor-pointer hover:opacity-80 transition-opacity" title="View members">
+                  {members.slice(0, 5).map((m) => (
+                    <span
+                      key={m.id}
+                      className="w-9 h-9 flex items-center justify-center text-white font-bold text-sm border-2 border-white ring-1 ring-neutral-900"
+                      style={{ background: m.avatar_color || '#FF4500' }}
+                    >
+                      {m.name?.[0]?.toUpperCase()}
+                    </span>
+                  ))}
+                  {members.length > 5 && (
+                    <span className="w-9 h-9 flex items-center justify-center text-xs font-bold bg-neutral-200 border-2 border-white ring-1 ring-neutral-900">
+                      +{members.length - 5}
+                    </span>
+                  )}
+                </button>
+              </PopoverTrigger>
+              <PopoverContent align="end" sideOffset={8} className="w-72 p-0 rounded-none border-2 border-neutral-900 brutal-shadow-sm bg-white">
+                <div className="px-4 py-3 border-b border-neutral-900 flex items-center justify-between">
+                  <p className="font-display font-bold text-sm uppercase tracking-wider">Members ({members.length})</p>
+                  <Users size={16} className="text-neutral-500" />
+                </div>
+                <div className="max-h-64 overflow-y-auto">
+                  {members.map((m) => (
+                    <div key={m.id} className="flex items-center gap-3 px-4 py-3 border-b border-neutral-100 last:border-b-0 hover:bg-neutral-50">
+                      <span
+                        className="w-8 h-8 shrink-0 flex items-center justify-center text-white font-bold text-xs border border-neutral-900"
+                        style={{ background: m.avatar_color || '#FF4500' }}
+                      >
+                        {m.name?.[0]?.toUpperCase()}
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-semibold truncate">{m.name}</p>
+                        <p className="text-xs text-neutral-500 truncate">{m.email}</p>
+                      </div>
+                      {m.id === workspace.owner_id && (
+                        <span className="tab-label text-[10px] px-1.5 py-0.5 bg-[#FF4500] text-white shrink-0">Owner</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
           <button
             data-testid={WORKSPACE.inviteBtn}
             onClick={() => setInviteOpen(true)}
