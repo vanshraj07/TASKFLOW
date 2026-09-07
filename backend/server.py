@@ -595,10 +595,20 @@ async def on_shutdown():
 
 app.include_router(api_router)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+cors_origins_raw = os.environ.get('CORS_ORIGINS', '*').strip()
+if cors_origins_raw == '*':
+    app.add_middleware(
+        CORSMiddleware,
+        allow_credentials=True,
+        allow_origins=["*"],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+else:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_credentials=True,
+        allow_origins=[o.strip() for o in cors_origins_raw.split(',') if o.strip()],
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
