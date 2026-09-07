@@ -596,19 +596,36 @@ async def on_shutdown():
 app.include_router(api_router)
 
 cors_origins_raw = os.environ.get('CORS_ORIGINS', '*').strip()
-if cors_origins_raw == '*':
-    app.add_middleware(
-        CORSMiddleware,
-        allow_credentials=True,
-        allow_origins=["*"],
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
-else:
-    app.add_middleware(
-        CORSMiddleware,
-        allow_credentials=True,
-        allow_origins=[o.strip() for o in cors_origins_raw.split(',') if o.strip()],
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+cors_list = [o.strip() for o in cors_origins_raw.split(',') if o.strip()] if cors_origins_raw != '*' else ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_list,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["*"],
+)
+
+# Explicit OPTIONS handler to guarantee preflight works on Vercel serverless
+from starlette.requests import Request
+from starlette.responses import Response
+from starlette.middleware.base import BaseHTTPMiddleware
+
+class ForceCORSMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request: Request, call_next):
+        origin = request.headers.get("origin", "")
+        if request.method == "OPTIONS":
+            response = Response(status_code=200)
+        else:
+            response = await call_next(request)
+        if origin:
+            response.headers["Access-Control-Allow-Origin"] = origin
+            response.headers["Access-Control-Allow-Credentials"] = "true"
+            response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, PATCH, DELETE, OPTIONS"
+            response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+            response.headers["Access-Control-Max-Age"] = "600"
+        return response
+
+app.add_middleware(ForceCORSMiddleware)
+
