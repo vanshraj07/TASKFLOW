@@ -221,14 +221,14 @@ export default function BoardPage() {
                   {members.slice(0, 5).map((m) => (
                     <span
                       key={m.id}
-                      className="w-9 h-9 flex items-center justify-center text-white font-bold text-sm border-2 border-white ring-1 ring-neutral-900"
+                      className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm border-2 border-white ring-1 ring-neutral-900"
                       style={{ background: m.avatar_color || '#FF4500' }}
                     >
                       {m.name?.[0]?.toUpperCase()}
                     </span>
                   ))}
                   {members.length > 5 && (
-                    <span className="w-9 h-9 flex items-center justify-center text-xs font-bold bg-neutral-200 border-2 border-white ring-1 ring-neutral-900">
+                    <span className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold bg-neutral-200 border-2 border-white ring-1 ring-neutral-900">
                       +{members.length - 5}
                     </span>
                   )}
@@ -243,7 +243,7 @@ export default function BoardPage() {
                   {members.map((m) => (
                     <div key={m.id} className="flex items-center gap-3 px-4 py-3 border-b border-neutral-100 last:border-b-0 hover:bg-neutral-50">
                       <span
-                        className="w-8 h-8 shrink-0 flex items-center justify-center text-white font-bold text-xs border border-neutral-900"
+                        className="w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-white font-bold text-xs border border-neutral-900"
                         style={{ background: m.avatar_color || '#FF4500' }}
                       >
                         {m.name?.[0]?.toUpperCase()}
