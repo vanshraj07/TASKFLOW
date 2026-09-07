@@ -279,7 +279,7 @@ export default function TaskModal({ task, members, workspaceId, onClose, onSaved
                     <CalendarIcon size={16} />
                   </button>
                 </PopoverTrigger>
-                <PopoverContent className="rounded-none border-2 border-neutral-900 brutal-shadow-sm p-0" align="start">
+                <PopoverContent className="rounded-none border-2 border-neutral-900 brutal-shadow-sm p-0 bg-white" align="start">
                   <Calendar
                     mode="single"
                     selected={form.due_date ? new Date(form.due_date) : undefined}
@@ -287,11 +287,11 @@ export default function TaskModal({ task, members, workspaceId, onClose, onSaved
                     initialFocus
                   />
                   {form.due_date && (
-                    <div className="p-2 border-t border-neutral-900">
+                    <div className="px-3 py-2.5 border-t border-neutral-900 bg-white">
                       <button
                         onClick={() => update('due_date', '')}
-                        className="text-xs text-[#FF3B30] font-bold uppercase"
-                      >Clear</button>
+                        className="text-xs text-[#FF3B30] font-bold uppercase hover:underline"
+                      >Clear due date</button>
                     </div>
                   )}
                 </PopoverContent>
